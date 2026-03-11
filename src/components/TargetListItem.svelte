@@ -3,6 +3,7 @@
 	import { Github, Check } from "@steeze-ui/lucide-icons"
 	import { Dialog, Tooltip } from "bits-ui"
 	import type { CBTarget } from "$lib/cloudBuildTypes"
+	import { base } from "$app/paths"
 
 	interface Props {
 		target: CBTarget
@@ -15,7 +16,7 @@
 	class="card preset-tonal-secondary lg:p-4 p-3 flex gap-4 justify-between items-center overflow-hidden"
 >
 	<div class="gap-2 flex items-center min-w-0">
-		<a href={`/targets/${target.target}`} class="fancy-link w-fit h-fit truncate shrink"
+		<a href={`${base}/targets/${target.target}`} class="fancy-link w-fit h-fit truncate shrink"
 			>{target.target}</a
 		>
 		<Tooltip.Root>
