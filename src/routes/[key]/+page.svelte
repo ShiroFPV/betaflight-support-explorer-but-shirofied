@@ -33,7 +33,8 @@
 
 	// Extract dump based on showFullText setting
 	let dump = $derived(support ? extractDump(support, $settings.showFullText) : null)
-	let { config, request } = $derived(build)
+	let config = $derived(build?.config)
+	let request = $derived(build?.request)
 
 	// Calculate PID Rate from gyro rate and pidDenom
 	let pidRate = $derived(
@@ -84,110 +85,116 @@
 		<ProblemDetector problems={detectedProblems} />
 	{/if}
 
+	{#if !build}
+		<div class="card preset-tonal-warning p-4 flex flex-col gap-2">
+			<header class="card-header text-warning-500 h3 font-bold">Locally Built Firmware</header>
+			<p class="text-base">No Cloud Build Key found. Build info is unavailable, but support data is shown below.</p>
+		</div>
+	{/if}
+
 	<div class="grid md:grid-cols-2 grid-cols-1 gap-6">
 		<div class="flex flex-col w-full gap-6">
-			<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
-				<header class="card-header text-primary-500 h3 font-bold">Firmware</header>
-				<section class="text-lg">
-					<div class="flex flex-col">
-						<div class="flex justify-between">
-							<div>
-								<span class="text-neutral-400 mr-1 text-base">{config.manufacturer}/</span
-								>{config.target}
+			{#if config && request}
+				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
+					<header class="card-header text-primary-500 h3 font-bold">Firmware</header>
+					<section class="text-lg">
+						<div class="flex flex-col">
+							<div class="flex justify-between">
+								<div>
+									<span class="text-neutral-400 mr-1 text-base">{config.manufacturer}/</span
+									>{config.target}
+								</div>
+								<div class="flex gap-2">
+									<a
+										href={`/targets/${config.target}`}
+										class="btn preset-filled-primary-500 btn-sm"
+										data-sveltekit-preload-data="hover"
+										data-sveltekit-preload-code="eager"
+									>
+										<span><Icon src={FileScan} size="1rem" /></span>
+										<span>View Target</span>
+									</a>
+									<a
+										href={`https://github.com/betaflight/config/blob/master/configs/${config.target}/config.h`}
+										class="btn preset-filled-primary-500 btn-sm"
+									>
+										<span><Icon src={Github} size="1rem" /></span>
+										<span>Open Target</span>
+									</a>
+								</div>
 							</div>
-							<div class="flex gap-2">
+							<hr class="hr border-surface-500 my-4 border-t-2" />
+							<div class="flex justify-between items-center">
+								<div>
+									<div class="flex flex-row">
+										<span class="text-neutral-400 mr-1 text-base">Release:</span>
+										<span class="text-base">{request.release}</span>
+									</div>
+									<div class="flex flex-row">
+										<span class="text-neutral-400 mr-1 text-base">Tag:</span>
+										<span class="text-base">{request.tag}</span>
+									</div>
+								</div>
 								<a
-									href={`/targets/${config.target}`}
-									class="btn preset-filled-primary-500 btn-sm"
-									data-sveltekit-preload-data="hover"
-									data-sveltekit-preload-code="eager"
+									href="https://github.com/betaflight/betaflight/releases/tag/{request.release}"
+									target="_blank"
+									class="btn preset-filled-secondary-500 btn-sm"
 								>
-									<span><Icon src={FileScan} size="1rem" /></span>
-									<span>View Target</span>
-								</a>
-								<a
-									href={`https://github.com/betaflight/config/blob/master/configs/${config.target}/config.h`}
-									class="btn preset-filled-primary-500 btn-sm"
-								>
-									<span><Icon src={Github} size="1rem" /></span>
-									<span>Open Target</span>
-								</a>
-								<!-- <a href="/" target="_blank" class="btn variant-filled-primary btn-sm">
 									<span><Icon src={BookOpen} size="1rem" /></span>
-									<span>Wiki</span>
-								</a> -->
+									<span>Changelog</span>
+								</a>
+							</div>
+						</div>
+					</section>
+				</div>
+			{/if}
+
+			{#if build}
+				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
+					<header class="card-header text-primary-500 h3 font-bold">Build</header>
+					<section class="text-lg">
+						<div class="flex flex-row items-center w-full justify-between">
+							<div class="flex">
+								<span class="text-neutral-400 mr-1 text-base">Status:</span>
+								<span class="badge preset-filled-success-500">{build.status}</span>
+							</div>
+							<div class="flex gap-2 flex-wrap w-min">
+								<a
+									href="https://build.betaflight.com/api/builds/{build.identifier}/log"
+									target="_blank"
+									class="btn preset-filled-secondary-500 btn-sm"
+								>
+									<span><Icon src={BookOpen} size="1rem" /></span>
+									<span>View Log</span>
+								</a>
+								<a
+									href="https://build.betaflight.com/api/builds/{build.identifier}/hex"
+									target="_blank"
+									class="btn preset-filled-primary-500 btn-sm"
+								>
+									<span><Icon src={Download} size="1rem" /></span>
+									<span>Download .hex</span>
+								</a>
 							</div>
 						</div>
 						<hr class="hr border-surface-500 my-4 border-t-2" />
-						<div class="flex justify-between items-center">
-							<div>
-								<div class="flex flex-row">
-									<span class="text-neutral-400 mr-1 text-base">Release:</span>
-									<span class="text-base">{request.release}</span>
-								</div>
-								<div class="flex flex-row">
-									<span class="text-neutral-400 mr-1 text-base">Tag:</span>
-									<span class="text-base">{request.tag}</span>
-								</div>
+						<div class="flex flex-col">
+							<div class="flex flex-row">
+								<span class="text-neutral-400 mr-1 text-base">Submitted:</span>
+								<span class="text-base">{formatTime(build.submitted)}</span>
 							</div>
-							<a
-								href="https://github.com/betaflight/betaflight/releases/tag/{request.release}"
-								target="_blank"
-								class="btn preset-filled-secondary-500 btn-sm"
-							>
-								<span><Icon src={BookOpen} size="1rem" /></span>
-								<span>Changelog</span>
-							</a>
+							<div class="flex flex-row">
+								<span class="text-neutral-400 mr-1 text-base">Elapsed:</span>
+								<span class="text-base">{build.elapsed}</span>
+								<span class="text-neutral-400 mr-1 text-base">ms</span>
+							</div>
 						</div>
-					</div>
-				</section>
-			</div>
-
-			<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
-				<header class="card-header text-primary-500 h3 font-bold">Build</header>
-				<section class="text-lg">
-					<div class="flex flex-row items-center w-full justify-between">
-						<div class="flex">
-							<span class="text-neutral-400 mr-1 text-base">Status:</span>
-							<span class="badge preset-filled-success-500">{build.status}</span>
-						</div>
-						<div class="flex gap-2 flex-wrap w-min">
-							<a
-								href="https://build.betaflight.com/api/builds/{build.identifier}/log"
-								target="_blank"
-								class="btn preset-filled-secondary-500 btn-sm"
-							>
-								<span><Icon src={BookOpen} size="1rem" /></span>
-								<span>View Log</span>
-							</a>
-							<a
-								href="https://build.betaflight.com/api/builds/{build.identifier}/hex"
-								target="_blank"
-								class="btn preset-filled-primary-500 btn-sm"
-							>
-								<span><Icon src={Download} size="1rem" /></span>
-								<span>Download .hex</span>
-							</a>
-						</div>
-					</div>
-					<hr class="hr border-surface-500 my-4 border-t-2" />
-					<div class="flex flex-col">
-						<div class="flex flex-row">
-							<span class="text-neutral-400 mr-1 text-base">Submitted:</span>
-							<span class="text-base">{formatTime(build.submitted)}</span>
-						</div>
-						<div class="flex flex-row">
-							<span class="text-neutral-400 mr-1 text-base">Elapsed:</span>
-							<span class="text-base">{build.elapsed}</span>
-							<span class="text-neutral-400 mr-1 text-base">ms</span>
-						</div>
-					</div>
-				</section>
-			</div>
+					</section>
+				</div>
+			{/if}
 
 			{#if problem}
 				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
-					<!-- problem description -->
 					<header class="card-header text-primary-500 h3 font-bold">Problem Description</header>
 					<section class="text-lg">
 						<blockquote class="blockquote text-base">{problem}</blockquote>
@@ -197,13 +204,9 @@
 
 			{#if ArmingDisableFlags.length > 0}
 				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
-					<!-- arming disable flags -->
 					<header class="card-header text-primary-500 h3 font-bold">Arming Disable Flags</header>
 					<section class="text-lg">
 						<div class="flex flex-row flex-wrap gap-2">
-							<!-- <div class="badge variant-ghost-error">RXLOSS</div>
-							<div class="badge variant-ghost-error">CLI</div>
-							<div class="badge variant-ghost-error">MSP</div> -->
 							{#each ArmingDisableFlags as flag, i (i)}
 								<div class="badge preset-tonal-error border border-error-500">{flag}</div>
 							{/each}
@@ -215,30 +218,27 @@
 			{#if dma && Object.keys(dma).length > 0}
 				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
 					<header class="card-header text-primary-500 h3 font-bold">DMA</header>
-
 					<section class="text-lg">
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-							{#if dma}
-								{#each Object.keys(dma) as dmaKey, i (i)}
-									<div class="flex flex-col gap-2">
-										<div class="text-primary-500 font-bold">{dmaKey}:</div>
-										{#each Object.keys(dma[dmaKey]) as channelKey, j (j)}
-											<div class="flex flex-row">
-												<span class="text-neutral-400 mr-1 text-base">{dmaKey} {channelKey}:</span>
-												{#if dma[dmaKey][channelKey] === "FREE"}
-													<span class="badge preset-tonal-tertiary border border-tertiary-500"
-														>{dma[dmaKey][channelKey]}</span
-													>
-												{:else}
-													<span class="badge preset-tonal-success border border-success-500"
-														>{dma[dmaKey][channelKey]}</span
-													>
-												{/if}
-											</div>
-										{/each}
-									</div>
-								{/each}
-							{/if}
+							{#each Object.keys(dma) as dmaKey, i (i)}
+								<div class="flex flex-col gap-2">
+									<div class="text-primary-500 font-bold">{dmaKey}:</div>
+									{#each Object.keys(dma[dmaKey]) as channelKey, j (j)}
+										<div class="flex flex-row">
+											<span class="text-neutral-400 mr-1 text-base">{dmaKey} {channelKey}:</span>
+											{#if dma[dmaKey][channelKey] === "FREE"}
+												<span class="badge preset-tonal-tertiary border border-tertiary-500"
+													>{dma[dmaKey][channelKey]}</span
+												>
+											{:else}
+												<span class="badge preset-tonal-success border border-success-500"
+													>{dma[dmaKey][channelKey]}</span
+												>
+											{/if}
+										</div>
+									{/each}
+								</div>
+							{/each}
 						</div>
 					</section>
 				</div>
@@ -246,25 +246,29 @@
 		</div>
 
 		<div class="flex flex-col w-full gap-6">
-			<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
-				<header class="card-header text-primary-500 h3 font-bold">Options</header>
-				<section class="text-lg">
-					<div class="flex gap-2 flex-row flex-wrap">
-						{#each request.options as option, i (i)}
-							<div class="badge preset-tonal-primary">{option}</div>
-						{/each}
-					</div>
-				</section>
-			</div>
+			{#if request}
+				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
+					<header class="card-header text-primary-500 h3 font-bold">Options</header>
+					<section class="text-lg">
+						<div class="flex gap-2 flex-row flex-wrap">
+							{#each request.options as option, i (i)}
+								<div class="badge preset-tonal-primary">{option}</div>
+							{/each}
+						</div>
+					</section>
+				</div>
+			{/if}
 
 			{#if status}
 				<div class="card preset-tonal-secondary p-4 flex flex-col gap-4">
 					<header class="card-header text-primary-500 h3 font-bold">Hardware</header>
 					<section class="text-lg">
-						<div class="flex flex-row">
-							<span class="text-neutral-400 mr-1 text-base">MCU:</span>
-							<span class="text-base">{config.mcu}</span>
-						</div>
+						{#if config}
+							<div class="flex flex-row">
+								<span class="text-neutral-400 mr-1 text-base">MCU:</span>
+								<span class="text-base">{config.mcu}</span>
+							</div>
+						{/if}
 						<div class="flex flex-col md:flex-row">
 							<div class="flex flex-row">
 								<span class="text-neutral-400 mr-1 text-base">Gyro:</span>
@@ -294,7 +298,6 @@
 							<span class="text-base">{status.CPU}</span>
 						</div>
 						<div class="flex flex-row">
-							<!-- core temp -->
 							<span class="text-neutral-400 mr-1 text-base">Core Tempreature:</span>
 							<span class="text-base">{status["Core temp"]}</span>
 						</div>
@@ -309,7 +312,6 @@
 								<span class="text-base">{status["System rate"]}</span>
 							</div>
 						</div>
-						<!-- Gyro rate -->
 						<div class="flex flex-row">
 							<div class="flex flex-row">
 								<span class="text-neutral-400 mr-1 text-base">Gyro Rate:</span>
@@ -328,10 +330,8 @@
 								<span class="text-base">{status["RX rate"]}</span>
 							</div>
 						</div>
-						<!-- mcu clock -->
 						<div class="flex flex-row">
 							<span class="text-neutral-400 mr-1 text-base">MCU Clock:</span>
-							<!-- match for key "* clock" -->
 							{#each Object.keys(status).filter((key) => key.includes("Clock")) as key, i (i)}
 								<span class="text-base">{status[key]}</span>
 							{/each}
@@ -345,36 +345,33 @@
 					<header class="card-header text-primary-500 h3 font-bold">Timers</header>
 					<section class="text-lg">
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-							{#if timer}
-								{#each splitTimer as timerHalf, i (i)}
-									<div class="flex flex-col w-full">
-										{#each timerHalf as timerKey, j (j)}
-											<div class="flex flex-col">
-												<header class="font-medium flex items-center">
-													<span>{timerKey}:</span>
-													{#if typeof timer[timerKey] === "string" && timer[timerKey] === "FREE"}
-														<span
-															class="badge preset-tonal-tertiary border border-tertiary-500 ml-2"
-															>{timer[timerKey]}</span
-														>
-													{/if}
-												</header>
-												{#if typeof timer[timerKey] !== "string"}
-													{#each Object.keys(timer[timerKey]) as channelKey, k (k)}
-														<div class="flex flex-row">
-															<span class="text-neutral-400 mr-1 text-base pl-3">{channelKey}:</span
-															>
-															<span class="badge preset-tonal-success border border-success-500"
-																>{timer[timerKey][channelKey]}</span
-															>
-														</div>
-													{/each}
+							{#each splitTimer as timerHalf, i (i)}
+								<div class="flex flex-col w-full">
+									{#each timerHalf as timerKey, j (j)}
+										<div class="flex flex-col">
+											<header class="font-medium flex items-center">
+												<span>{timerKey}:</span>
+												{#if typeof timer[timerKey] === "string" && timer[timerKey] === "FREE"}
+													<span
+														class="badge preset-tonal-tertiary border border-tertiary-500 ml-2"
+														>{timer[timerKey]}</span
+													>
 												{/if}
-											</div>
-										{/each}
-									</div>
-								{/each}
-							{/if}
+											</header>
+											{#if typeof timer[timerKey] !== "string"}
+												{#each Object.keys(timer[timerKey]) as channelKey, k (k)}
+													<div class="flex flex-row">
+														<span class="text-neutral-400 mr-1 text-base pl-3">{channelKey}:</span>
+														<span class="badge preset-tonal-success border border-success-500"
+															>{timer[timerKey][channelKey]}</span
+														>
+													</div>
+												{/each}
+											{/if}
+										</div>
+									{/each}
+								</div>
+							{/each}
 						</div>
 					</section>
 				</div>

@@ -71,10 +71,6 @@ function addPreviousId(
 	}
 }
 
-export const prerender = false
-export const ssr = false
-
-
 export const load = (async ({ params, fetch }) => {
 	const key = params.key as string
 	let isBuildKey: boolean = false
@@ -112,14 +108,17 @@ export const load = (async ({ params, fetch }) => {
 
 		const supportBuildKeyMatch = supportText.match(/BUILD KEY: ([a-z0-9]+)/i)
 		const supportBuildKey = supportBuildKeyMatch ? supportBuildKeyMatch[1] : null
+		const buildResponse = await fetch(
+			`https://build.betaflight.com/api/builds/${supportBuildKey}/json`
+		)
 		let build = null
-		if (supportBuildKey) {
-			const buildResponse = await fetch(
-				`https://build.betaflight.com/api/builds/${supportBuildKey}/json`
-			)
-			if (buildResponse.ok) {
-				build = await buildResponse.json()
-			}
+		if (buildResponse.ok) {
+			build = await buildResponse.json()
+		} else {
+			return error(400, {
+				message:
+					"The data in this Support ID is missing a valid Cloud Build Key. Likely from a locally built firmware."
+			})
 		}
 
 		const status = extractStatus(supportText)
@@ -220,15 +219,13 @@ export const load = (async ({ params, fetch }) => {
 		}
 
 		// Add the support ID to the previous IDs store
-		if (build) {
-			addPreviousId(
-				key,
-				build.config,
-				build.request,
-				problem,
-				(status?.["Arming disable flags"] as string)?.split(" ") ?? []
-			)
-		}
+		addPreviousId(
+			key,
+			build.config,
+			build.request,
+			problem,
+			(status?.["Arming disable flags"] as string)?.split(" ") ?? []
+		)
 
 		// Detect problems based on the extracted data
 		const detectedProblems = detectProblems({
@@ -256,7 +253,7 @@ export const load = (async ({ params, fetch }) => {
 
 		const description = build?.config
 			? `Firmware: ${build.config.manufacturer}/${build.config.target} \n Release: ${build.request.release} \n Tag: ${build.request.tag} \n Status: ${build.status} \n Submitted: ${formatTime(build.submitted)} \n Elapsed: ${build.elapsed}ms \n \n Options: ${build.request.options.join(", ")}`
-			: "Betaflight Support Explorer - Locally built firmware support data"
+			: "Betaflight Support Explorer - Analyze Betaflight support data and cloud builds"
 
 		return {
 			build,
