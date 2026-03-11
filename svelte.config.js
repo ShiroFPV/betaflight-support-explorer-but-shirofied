@@ -37,6 +37,9 @@ const config = {
 	},
 	kit: {
 		adapter: getAdapter(),
+		paths: {
+			base: process.env.ADAPTER === "static" ? "/betaflight-support-explorer" : ""
+		},
 		alias: {
 			$components: "./src/components"
 		}
