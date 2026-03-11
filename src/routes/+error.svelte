@@ -4,6 +4,7 @@
 	import { CloudAlert, House } from "@steeze-ui/lucide-icons"
 	import { fly } from "svelte/transition"
 	import { extractSupportId } from "$lib/extractSupportId"
+	import { base } from "$app/paths"
 
 	const id = extractSupportId(page.params.key ?? "")
 	const status = page.status
@@ -17,7 +18,7 @@
 	<h1 class="text-4xl font-bold text-error-500">Error {status}:</h1>
 	<h2 class="text-2xl">{message}</h2>
 	<div class="flex gap-4">
-		<a href="/" class="btn preset-filled-secondary-500 btn-lg">
+		<a href="{base}/" class="btn preset-filled-secondary-500 btn-lg">
 			<span><Icon src={House} size="1.5rem" /></span>
 			Back to Home
 		</a>

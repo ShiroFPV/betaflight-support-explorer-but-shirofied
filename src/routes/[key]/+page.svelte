@@ -11,6 +11,7 @@
 	import CodeBlock from "$components/CodeBlock/CodeBlock.svelte"
 	import { extractDump } from "$lib/extract"
 	import { settings } from "$lib/stores/settings"
+	import { base } from "$app/paths"
 
 	interface Props {
 		data: PageData
@@ -106,7 +107,7 @@
 								</div>
 								<div class="flex gap-2">
 									<a
-										href={`/targets/${config.target}`}
+										href={`${base}/targets/${config.target}`}
 										class="btn preset-filled-primary-500 btn-sm"
 										data-sveltekit-preload-data="hover"
 										data-sveltekit-preload-code="eager"

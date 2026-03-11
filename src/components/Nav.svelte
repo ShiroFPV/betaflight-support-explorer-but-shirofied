@@ -12,6 +12,7 @@
 		Coffee
 	} from "@steeze-ui/lucide-icons"
 	import { goto, invalidate } from "$app/navigation"
+	import { base } from "$app/paths"
 	import { extractSupportId } from "$lib/extractSupportId"
 
 	let newSupportKey = $state("")
@@ -63,7 +64,7 @@
 		isLoading = true
 		try {
 			await invalidate("all")
-			await goto("/" + supportId)
+			await goto(base + "/" + supportId)
 		} finally {
 			isLoading = false
 			newSupportKey = ""
@@ -77,11 +78,11 @@
 >
 	<div class="grid grid-cols-2 lg:grid-cols-[2fr_2fr_2fr] w-full lg:px-8 px-4 gap-3 py-2">
 		<div class="flex justify-start xl:gap-8 lg:gap-4 gap-2 items-center order-1">
-			<a href="/" class="h-fit fancy-link" data-active={page.url.pathname === "/"}>home</a>
+			<a href="{base}/" class="h-fit fancy-link" data-active={page.url.pathname === base + "/"}>home</a>
 			<a
-				href="/targets"
+				href="{base}/targets"
 				class="h-fit fancy-link"
-				data-active={page.url.pathname.startsWith("/targets")}>targets</a
+				data-active={page.url.pathname.startsWith(base + "/targets")}>targets</a
 			>
 		</div>
 		<div class="flex justify-center col-span-2 lg:col-span-1 order-3 lg:order-2 min-w-[28rem]">
@@ -142,7 +143,7 @@
 				</span>
 			</a>
 			<span class="border-surface-500 vr"></span>
-			<a href="/settings" class="h-fit fancy-link" data-active={page.url.pathname === "/settings"}
+			<a href="{base}/settings" class="h-fit fancy-link" data-active={page.url.pathname === base + "/settings"}
 				>settings</a
 			>
 		</div>

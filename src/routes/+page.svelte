@@ -5,6 +5,7 @@
 	import { fly } from "svelte/transition"
 	import { Trash } from "@steeze-ui/lucide-icons"
 	import { writable } from "svelte/store"
+	import { base } from "$app/paths"
 
 	const description =
 		"Easily explore all the data from support data submissions! Just paste the support key and get started."
@@ -82,7 +83,7 @@
 >
 	<h1 class="text-primary-500 font-bold h1 lg:pt-24">Previous IDs</h1>
 	<div class="text-neutral-400 text-sm h-fit">
-		Pick data to show in <a href="/settings" class="fancy-link font-bold text-primary-500"
+		Pick data to show in <a href="{base}/settings" class="fancy-link font-bold text-primary-500"
 			>/settings</a
 		>. IDs can be restored by pressing <span class="font-bold">Ctrl+Z</span>.
 	</div>
@@ -111,7 +112,7 @@
 							{/if}
 							{#if getSetting("target")}
 								<a
-									href={"/" + id.id}
+									href={base + "/" + id.id}
 									class="text-primary-500 text-lg font-bold h-fit relative top-0.5 hover:underline"
 									data-sveltekit-preload-data="hover">{id.target}</a
 								>
