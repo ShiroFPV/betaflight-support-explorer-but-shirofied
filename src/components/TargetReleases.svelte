@@ -52,8 +52,8 @@
 
 <Accordion collapsible>
 	<Accordion.Item
-		classes="card preset-tonal-secondary"
-		controlHover="hover:bg-primary-500/20"
+		classes="glass-card card-hover rounded-2xl"
+		controlHover="hover:bg-primary-500/10"
 		value="releases"
 	>
 		{#snippet control()}
@@ -62,7 +62,7 @@
 		{#snippet panel()}
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
 				{#each releases as release (release.release)}
-					<div class="flex gap-2 card preset-tonal-secondary p-2 justify-between">
+					<div class="flex gap-2 glass-card rounded-xl p-2 justify-between">
 						<a
 							href={releaseToUrl(release)}
 							class="text-xl {releaseTypeToColor(
