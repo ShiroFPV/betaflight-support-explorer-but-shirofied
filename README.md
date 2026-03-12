@@ -1,3 +1,5 @@
+## This is a modified version of Betaflight Support Explorer, originally by the Betaflight team. Licensed under GPL v3. Source code.
+
 # Betaflight Support Explorer
 
 A web-based tool for analyzing Betaflight firmware support data and build information from Support IDs.
