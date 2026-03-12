@@ -3,7 +3,7 @@
 	import { settings } from "$lib/stores/settings"
 	import { previousIds } from "$lib/stores/previousIds"
 	import { fly } from "svelte/transition"
-	import { Trash, Copy, Check, Inbox } from "@steeze-ui/lucide-icons"
+	import { Trash, Copy, Check, Inbox, X } from "@steeze-ui/lucide-icons"
 	import { writable } from "svelte/store"
 	import { base } from "$app/paths"
 
@@ -13,8 +13,8 @@
 	type DeletedItem = (typeof $previousIds)[number] & { originalIndex: number }
 	const deletedItems = writable<DeletedItem[]>([])
 
-	// Track copied IDs for visual feedback
-	const copiedIds = writable<Set<string>>(new Set())
+	// Track copy states: 'copied', 'error', or undefined per id
+	const copyState = writable<Map<string, "copied" | "error">>(new Map())
 
 	function formatDate(timestamp: number) {
 		return new Date(timestamp).toLocaleDateString("en-GB", {
@@ -67,20 +67,25 @@
 	async function copyId(id: string) {
 		try {
 			await navigator.clipboard.writeText(id)
-			copiedIds.update((s) => {
-				const next = new Set(s)
-				next.add(id)
+			copyState.update((m) => {
+				const next = new Map(m)
+				next.set(id, "copied")
 				return next
 			})
+		} catch {
+			copyState.update((m) => {
+				const next = new Map(m)
+				next.set(id, "error")
+				return next
+			})
+		} finally {
 			setTimeout(() => {
-				copiedIds.update((s) => {
-					const next = new Set(s)
+				copyState.update((m) => {
+					const next = new Map(m)
 					next.delete(id)
 					return next
 				})
 			}, 2000)
-		} catch {
-			// silently fail if clipboard not available
 		}
 	}
 
@@ -114,9 +119,9 @@
 	in:fly={{ x: 500, duration: 400 }}
 >
 	<!-- Decorative floating orbs -->
-	<div class="orb orb-purple w-96 h-96 -top-24 -left-24 opacity-50"></div>
-	<div class="orb orb-pink w-64 h-64 top-1/3 -right-16 opacity-40"></div>
-	<div class="orb orb-blue w-80 h-80 bottom-1/4 left-1/3 opacity-30"></div>
+	<div class="orb orb-purple w-96 h-96 -top-24 -left-24 opacity-50" aria-hidden="true"></div>
+	<div class="orb orb-pink w-64 h-64 top-1/3 -right-16 opacity-40" aria-hidden="true"></div>
+	<div class="orb orb-blue w-80 h-80 bottom-1/4 left-1/3 opacity-30" aria-hidden="true"></div>
 
 	<h1 class="gradient-text font-bold h1 lg:pt-24">Previous IDs</h1>
 
@@ -202,8 +207,10 @@
 								onclick={() => copyId(id.id)}
 								title="Copy support ID"
 							>
-								{#if $copiedIds.has(id.id)}
+								{#if $copyState.get(id.id) === "copied"}
 									<Icon src={Check} size="1rem" class="text-success-400" />
+								{:else if $copyState.get(id.id) === "error"}
+									<Icon src={X} size="1rem" class="text-error-400" />
 								{:else}
 									<Icon src={Copy} size="1rem" />
 								{/if}

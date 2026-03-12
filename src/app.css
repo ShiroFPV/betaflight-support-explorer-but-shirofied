@@ -55,6 +55,11 @@
 	::-webkit-scrollbar-thumb:hover {
 		background: linear-gradient(180deg, #ff5fbf, #77f2ff);
 	}
+	/* Firefox scrollbar */
+	* {
+		scrollbar-color: #ff8fd4 #161225;
+		scrollbar-width: thin;
+	}
 }
 
 @layer utilities {
