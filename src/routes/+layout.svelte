@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "../app.css"
 	import Nav from "$components/Nav.svelte"
+	import Footer from "$components/Footer.svelte"
 	import { Tooltip } from "bits-ui"
 	import { onMount } from "svelte"
 
@@ -43,10 +44,14 @@
 </svelte:head>
 
 <!-- Padding top for the fixed navbar -->
-<div class="max-w-screen overflow-x-hidden pt-32 lg:pt-16">
+<div class="max-w-screen overflow-x-hidden pt-32 lg:pt-16 flex flex-col min-h-screen">
 	<Nav />
 
-	<Tooltip.Provider delayDuration={300}>{@render children?.()}</Tooltip.Provider>
+	<div class="flex-1">
+		<Tooltip.Provider delayDuration={300}>{@render children?.()}</Tooltip.Provider>
+	</div>
+
+	<Footer />
 </div>
 
 <!-- Back to top button -->
