@@ -4,11 +4,7 @@
 
 @import "@skeletonlabs/skeleton/optional/presets";
 
-/*
-  Add your theme import for your theme: "yellow-theme" here
-*/
-
-@import "../yellow-theme.css";
+@import "../shirofpv-theme.css";
 
 @source "../node_modules/@skeletonlabs/skeleton-svelte/dist";
 @source "/routes/**/*.svelte";
@@ -27,9 +23,6 @@
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
 */
 @layer base {
 	*,
@@ -41,20 +34,147 @@
 	}
 	::selection {
 		background-color: var(--color-primary-500);
-		color: black;
+		color: white;
 		@supports (color: color-mix(in lab, red, red)) {
 			background-color: color-mix(in srgb, var(--color-primary-500) 90%, transparent);
 		}
+	}
+
+	/* Custom scrollbar: pink→blue gradient thumb */
+	::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+	::-webkit-scrollbar-track {
+		background: #161225;
+	}
+	::-webkit-scrollbar-thumb {
+		background: linear-gradient(180deg, #ff8fd4, #7dd3ff);
+		border-radius: 4px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: linear-gradient(180deg, #ff5fbf, #77f2ff);
+	}
+	/* Firefox scrollbar */
+	* {
+		scrollbar-color: #ff8fd4 #161225;
+		scrollbar-width: thin;
 	}
 }
 
 @layer utilities {
 }
 
-/* html,
+/* Body: ShiroFPV radial gradient background */
 body {
-	@apply h-full overflow-hidden;
-} */
+	background:
+		radial-gradient(circle at 18% -10%, rgba(255, 185, 229, 0.22) 0%, transparent 45%),
+		radial-gradient(circle at 88% 0%, rgba(152, 226, 255, 0.2) 0%, transparent 48%),
+		linear-gradient(180deg, #1e1730 0%, #19142a 52%, #130f21 100%);
+	min-height: 100vh;
+}
+
+/* Glassmorphism utility classes */
+.glass-card {
+	background: rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid rgba(255, 199, 232, 0.28);
+}
+
+.glass-nav {
+	background: rgba(24, 18, 39, 0.78);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border-bottom: 1px solid rgba(255, 173, 218, 0.35);
+}
+
+/* Gradient text */
+.gradient-text {
+	background: linear-gradient(135deg, #ffd0ea 0%, #9ee8ff 55%, #ffb4e0 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Card hover effect */
+.card-hover {
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
+}
+.card-hover:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 32px rgba(180, 139, 255, 0.2);
+}
+
+/* Floating orb decorations */
+.orb {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(80px);
+	pointer-events: none;
+	animation: float 6s ease-in-out infinite;
+}
+.orb-purple {
+	background: rgba(180, 139, 255, 0.25);
+}
+.orb-pink {
+	background: rgba(255, 143, 212, 0.2);
+	animation-delay: -2s;
+}
+.orb-blue {
+	background: rgba(125, 211, 255, 0.18);
+	animation-delay: -4s;
+}
+
+/* Animations */
+@keyframes float {
+	0%,
+	100% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes gradientShift {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes pulseGlow {
+	0%,
+	100% {
+		box-shadow: 0 0 8px rgba(180, 139, 255, 0.3);
+	}
+	50% {
+		box-shadow: 0 0 24px rgba(180, 139, 255, 0.6);
+	}
+}
+
+.animate-fade-in-up {
+	animation: fadeInUp 0.6s ease-out both;
+}
 
 .transition-container {
 	display: grid;
@@ -91,60 +211,60 @@ body {
 }
 .fancy-link:hover {
 	background-size: 100% 100%;
-	color: var(--color-black);
+	color: white;
 }
 
 .fancy-link[data-active="true"] {
 	background-size: 100% 100%;
-	color: var(--color-black);
+	color: white;
 	font-weight: 600;
 }
 
-[data-theme="yellowtheme"] .preset-tonal-primary {
+[data-theme="shirofpvtheme"] .preset-tonal-primary {
 	background-color: color-mix(in srgb, var(--color-primary-500) 20%, transparent);
 }
 
-[data-theme="yellowtheme"] .preset-tonal-secondary {
+[data-theme="shirofpvtheme"] .preset-tonal-secondary {
 	background-color: color-mix(in srgb, var(--color-secondary-500) 18%, transparent);
 }
 
-[data-theme="yellowtheme"] .preset-tonal-tertiary {
-	background-color: color-mix(in srgb, var(--color-tertiary-500) 30%, transparent);
+[data-theme="shirofpvtheme"] .preset-tonal-tertiary {
+	background-color: color-mix(in srgb, var(--color-tertiary-500) 25%, transparent);
 }
 
-[data-theme="yellowtheme"] .preset-tonal-neutral {
-	background-color: color-mix(in srgb, var(--color-neutral-500) 30%, transparent);
+[data-theme="shirofpvtheme"] .preset-tonal-neutral {
+	background-color: color-mix(in srgb, var(--color-neutral-500) 20%, transparent);
 }
 
-[data-theme="yellowtheme"] .preset-tonal-success {
+[data-theme="shirofpvtheme"] .preset-tonal-success {
 	background-color: color-mix(in srgb, var(--color-success-500) 20%, transparent);
 }
 
-[data-theme="yellowtheme"] .preset-tonal-warning {
+[data-theme="shirofpvtheme"] .preset-tonal-warning {
 	background-color: color-mix(in srgb, var(--color-warning-500) 20%, transparent);
 }
 
-[data-theme="yellowtheme"] .preset-tonal-error {
+[data-theme="shirofpvtheme"] .preset-tonal-error {
 	background-color: color-mix(in srgb, var(--color-error-500) 20%, transparent);
 }
 
-[data-theme="yellowtheme"] .card.preset-tonal-secondary {
-	border-color: var(--color-surface-500);
+[data-theme="shirofpvtheme"] .card.preset-tonal-secondary {
+	border-color: rgba(255, 199, 232, 0.2);
 	border-width: 1px;
 }
 
-[data-theme="yellowtheme"] .card.preset-tonal-primary {
-	border-color: color-mix(in srgb, var(--color-primary-500) 20%, transparent);
+[data-theme="shirofpvtheme"] .card.preset-tonal-primary {
+	border-color: color-mix(in srgb, var(--color-primary-500) 30%, transparent);
 	border-width: 1px;
 }
 
-[data-theme="yellowtheme"] .card.preset-tonal-warning pre {
+[data-theme="shirofpvtheme"] .card.preset-tonal-warning pre {
 	background-color: color-mix(in srgb, var(--color-warning-500) 10%, transparent);
 	border-radius: 0.75rem;
 	padding: 0.5rem;
 }
 
-[data-theme="yellowtheme"] .card.preset-tonal-error pre {
+[data-theme="shirofpvtheme"] .card.preset-tonal-error pre {
 	background-color: color-mix(in srgb, var(--color-error-500) 10%, transparent);
 	border-radius: 0.75rem;
 	padding: 0.5rem;

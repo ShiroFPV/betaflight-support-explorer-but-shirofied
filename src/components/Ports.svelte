@@ -106,8 +106,8 @@
 
 <Accordion collapsible>
 	<Accordion.Item
-		classes="card preset-tonal-secondary"
-		controlHover="hover:bg-primary-500/20"
+		classes="glass-card card-hover rounded-2xl"
+		controlHover="hover:bg-primary-500/10"
 		value="ports"
 	>
 		{#snippet control()}

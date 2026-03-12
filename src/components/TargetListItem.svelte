@@ -13,7 +13,7 @@
 </script>
 
 <div
-	class="card preset-tonal-secondary lg:p-4 p-3 flex gap-4 justify-between items-center overflow-hidden"
+	class="glass-card card-hover rounded-2xl lg:p-4 p-3 flex gap-4 justify-between items-center overflow-hidden"
 >
 	<div class="gap-2 flex items-center min-w-0">
 		<a href={`${base}/targets/${target.target}`} class="fancy-link w-fit h-fit truncate shrink"

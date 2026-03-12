@@ -23,10 +23,10 @@
 	<meta name="description" content={description} />
 
 	<meta property="og:title" content={title} />
-	<meta property="og:url" content="https://betaflight-support-explorer.netlify.app/" />
+	<meta property="og:url" content="https://shirofpv.dev/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:description" content={description} />
-	<meta name="theme-color" content="#ffbb00" />
+	<meta name="theme-color" content="#b48bff" />
 </svelte:head>
 
 <div
@@ -64,7 +64,7 @@
 	<CodeBlock
 		code={target.content}
 		lang="c"
-		classes="card preset-tonal-secondary overflow-scroll"
+		classes="glass-card rounded-2xl overflow-scroll"
 		preClasses="[&>pre]:!bg-transparent"
 	/>
 </div>

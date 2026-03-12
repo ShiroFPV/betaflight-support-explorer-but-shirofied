@@ -73,11 +73,20 @@
 </script>
 
 <nav
-	class="flex fixed bg-surface-950 top-0 left-0 right-0 z-10 justify-between items-center h-fit lg:h-16 shadow-[0_-0.5rem_0.5rem_1rem] shadow-surface-950"
+	class="glass-nav flex fixed top-0 left-0 right-0 z-10 justify-between items-center h-fit lg:h-16"
 	data-sveltekit-preload-data="hover"
 >
 	<div class="grid grid-cols-2 lg:grid-cols-[2fr_2fr_2fr] w-full lg:px-8 px-4 gap-3 py-2">
 		<div class="flex justify-start xl:gap-8 lg:gap-4 gap-2 items-center order-1">
+			<a
+				href="https://shirofpv.dev"
+				class="gradient-text font-bold text-lg hidden xl:block"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				ShiroFPV
+			</a>
+			<span class="border-surface-500 vr hidden xl:block"></span>
 			<a href="{base}/" class="h-fit fancy-link" data-active={page.url.pathname === base + "/"}>home</a>
 			<a
 				href="{base}/targets"
@@ -86,9 +95,8 @@
 			>
 		</div>
 		<div class="flex justify-center col-span-2 lg:col-span-1 order-3 lg:order-2 min-w-[28rem]">
-			<!-- <input type="search" placeholder="Search..." class="input input-sm" /> -->
 			<form
-				class="input-group grid-cols-[auto_1fr_auto] w-full rounded-full focus-within:ring-[3px] focus-within:ring-primary-500"
+				class="input-group grid-cols-[auto_1fr_auto] w-full rounded-full focus-within:ring-[2px] focus-within:ring-primary-500"
 				onsubmit={preventDefault(searchNewSupport)}
 			>
 				<button class="ig-btn preset-tonal-secondary pr-2" onclick={paste} disabled={isPasting}>
@@ -106,8 +114,6 @@
 						(isLoading ? " cursor-none" : "")}
 					disabled={!hasValidId}
 				>
-					<!-- <Icon src={ArrowRightCircle} size="1.5rem" /> -->
-					<!-- if isLoading, show a spinner -->
 					{#if isLoading}
 						<Icon src={LoaderCircle} size="1.5rem" class="animate-spin" />
 					{:else}
@@ -118,20 +124,19 @@
 		</div>
 		<div class="flex justify-end items-center order-2 lg:order-3 xl:gap-8 lg:gap-4 gap-2">
 			<a
-				href="https://ko-fi.com/vitroid"
+				href="https://ko-fi.com/shirofpv"
 				class="h-fit fancy-link flex gap-1 items-center whitespace-nowrap"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
 				<Icon src={Coffee} size="1.25rem" />
-				<span class="hidden xl:block">support the app</span>
+				<span class="hidden xl:block">support</span>
 				<span class="self-start">
 					<Icon src={ArrowUpRight} size="0.75rem" />
 				</span>
 			</a>
-			<!-- <button class="btn btn-sm">settings</button> -->
 			<a
-				href="https://github.com/betaflight/betaflight-support-explorer"
+				href="https://github.com/ShiroFPV/betaflight-support-explorer-but-shirofied"
 				class="h-fit fancy-link flex gap-1 items-center"
 				target="_blank"
 				rel="noopener noreferrer"
